@@ -1,5 +1,7 @@
 #pragma once
 
+#include "OpenGLWindow.h"
+
 #include <QtCore/QVariant>
 #include <QtOpenGLWidgets/QOpenGLWidget>
 #include <QtWidgets/QApplication>
@@ -24,13 +26,13 @@ private:
     void setupUi();
 
 private:
-    QWidget* centralWidget;
-    QWidget* gridLayoutWidget;
-    QGridLayout* gridLayout;
-    QVBoxLayout* verticalLayout;
-    QHBoxLayout* horizontalLayout;
-    QLabel* label;
-    QDateEdit* dateEdit;
-    QPushButton* pushButton;
-    QOpenGLWidget* openGLWidget;
+    QWidget* mCentralWidget;
+    QWidget* mGridLayoutWidget;
+    QGridLayout* mGridLayout;
+    QVBoxLayout* mVerticalLayout;
+    QHBoxLayout* mHorizontalLayout;
+    QLabel* mLabel;
+    QDateEdit* mDateEdit;
+    QPushButton* mPushButton;
+    OpenGLWindow* mOpenGLWidget;
 };

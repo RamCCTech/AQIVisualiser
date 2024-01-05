@@ -13,53 +13,31 @@ AQIVisualizer::~AQIVisualizer()
 void AQIVisualizer::setupUi()
 {
     resize(830, 625);
-    centralWidget = new QWidget(this);
-    centralWidget->setObjectName("centralWidget");
-    gridLayoutWidget = new QWidget(centralWidget);
-    gridLayoutWidget->setObjectName("gridLayoutWidget");
-    gridLayoutWidget->setGeometry(QRect(0, 0, 811, 611));
-    gridLayout = new QGridLayout(gridLayoutWidget);
-    gridLayout->setSpacing(6);
-    gridLayout->setContentsMargins(11, 11, 11, 11);
-    gridLayout->setObjectName("gridLayout");
-    gridLayout->setContentsMargins(0, 0, 0, 0);
-    verticalLayout = new QVBoxLayout();
-    verticalLayout->setSpacing(6);
-    verticalLayout->setObjectName("verticalLayout");
-    horizontalLayout = new QHBoxLayout();
-    horizontalLayout->setSpacing(6);
-    horizontalLayout->setObjectName("horizontalLayout");
-    label = new QLabel(gridLayoutWidget);
-    label->setObjectName("label");
-    QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
-    sizePolicy.setHorizontalStretch(0);
-    sizePolicy.setVerticalStretch(0);
-    sizePolicy.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
-    label->setSizePolicy(sizePolicy);
+    mCentralWidget = new QWidget(this);
 
-    horizontalLayout->addWidget(label);
+    mGridLayoutWidget = new QWidget(mCentralWidget);
+    mGridLayoutWidget->setGeometry(QRect(0, 0, 830, 625));
+    mGridLayout = new QGridLayout(mGridLayoutWidget);
 
-    dateEdit = new QDateEdit(gridLayoutWidget);
-    dateEdit->setObjectName("dateEdit");
+    mVerticalLayout = new QVBoxLayout();
 
-    horizontalLayout->addWidget(dateEdit);
+    mHorizontalLayout = new QHBoxLayout();
 
-    pushButton = new QPushButton(gridLayoutWidget);
-    pushButton->setObjectName("pushButton");
+    mLabel = new QLabel("Date", mGridLayoutWidget);
+    mHorizontalLayout->addWidget(mLabel);
 
-    horizontalLayout->addWidget(pushButton);
+    mDateEdit = new QDateEdit(mGridLayoutWidget);
+    mHorizontalLayout->addWidget(mDateEdit);
 
+    mPushButton = new QPushButton("Set Date", mGridLayoutWidget);
+    mHorizontalLayout->addWidget(mPushButton);
 
-    verticalLayout->addLayout(horizontalLayout);
+    mOpenGLWidget = new OpenGLWindow(QColor(0, 0, 0), mCentralWidget);
+    mGridLayout->addWidget(mOpenGLWidget, 0, 0, 1, 1);
 
+    mVerticalLayout->addLayout(mHorizontalLayout);
+    mGridLayout->addLayout(mVerticalLayout, 1, 0, 1, 1);
 
-    gridLayout->addLayout(verticalLayout, 1, 0, 1, 1);
-
-    openGLWidget = new QOpenGLWidget(gridLayoutWidget);
-    openGLWidget->setObjectName("openGLWidget");
-
-    gridLayout->addWidget(openGLWidget, 0, 0, 1, 1);
-
-    setCentralWidget(centralWidget);
+    setCentralWidget(mCentralWidget);
 
 }
