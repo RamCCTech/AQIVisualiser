@@ -24,6 +24,7 @@ public:
 
 private:
     void setupUi();
+    void setupTableModel();
 
 private:
     QWidget* mCentralWidget;
@@ -31,8 +32,9 @@ private:
     QGridLayout* mGridLayout;
     QVBoxLayout* mVerticalLayout;
     QHBoxLayout* mHorizontalLayout;
+    QHBoxLayout* mHorizontalLayout1;
     QLabel* mLabel;
     QDateEdit* mDateEdit;
-    QPushButton* mPushButton;
     OpenGLWindow* mOpenGLWidget;
+    QTableView* mTableView;
 };

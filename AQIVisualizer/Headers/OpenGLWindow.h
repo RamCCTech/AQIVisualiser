@@ -25,12 +25,15 @@ public:
 protected:
     void paintGL() override;
     void initializeGL() override;
+    void wheelEvent(QWheelEvent* event) override;
 
 private:
     void reset();
     void setupMatrix();
     void drawVertices(const QVector<GLfloat>& vertices, const QVector<GLfloat>& colors);
-
+    void zoomOut();
+    void zoomIn();
+    void addFilePoints(QString s, float a, float b, float c);
 
 private:
     bool mAnimating = false;
@@ -52,4 +55,5 @@ private:
 
     QVector<GLfloat> mVertices;
     QVector<GLfloat> mColors;
+    float scaleFactor=1;
 };

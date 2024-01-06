@@ -29,15 +29,44 @@ void AQIVisualizer::setupUi()
     mDateEdit = new QDateEdit(mGridLayoutWidget);
     mHorizontalLayout->addWidget(mDateEdit);
 
-    mPushButton = new QPushButton("Set Date", mGridLayoutWidget);
-    mHorizontalLayout->addWidget(mPushButton);
+    mHorizontalLayout1 = new QHBoxLayout();
 
     mOpenGLWidget = new OpenGLWindow(QColor(0, 0, 0), mCentralWidget);
-    mGridLayout->addWidget(mOpenGLWidget, 0, 0, 1, 1);
+    mHorizontalLayout1->addWidget(mOpenGLWidget);
+
+    mTableView = new QTableView(mGridLayoutWidget);
+    QSizePolicy sizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
+    mTableView->setSizePolicy(sizePolicy);
+    mHorizontalLayout1->addWidget(mTableView);
+    mGridLayout->addLayout(mHorizontalLayout1, 0, 0, 1, 1);
 
     mVerticalLayout->addLayout(mHorizontalLayout);
     mGridLayout->addLayout(mVerticalLayout, 1, 0, 1, 1);
 
     setCentralWidget(mCentralWidget);
+    setupTableModel();
+}
 
+void AQIVisualizer::setupTableModel()
+{
+    // Create a standard item model
+    QStandardItemModel* model = new QStandardItemModel(this);
+
+    // Set the column headers
+    model->setHorizontalHeaderLabels(QStringList() << "State" << "AUI");
+
+    // Add dummy data (replace this with your actual data)
+    QList<QStandardItem*> row;
+    for (int i = 0; i < 10; i++) {
+        row << new QStandardItem("State1") << new QStandardItem("AUI1");
+        model->appendRow(row);
+
+        row.clear();
+        row << new QStandardItem("State2") << new QStandardItem("AUI2");
+        model->appendRow(row);
+        row.clear();
+    }
+    
+    // Set the model for the table view
+    mTableView->setModel(model);
 }

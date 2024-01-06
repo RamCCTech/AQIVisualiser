@@ -67,10 +67,10 @@ void OpenGLWindow::initializeGL()
 void OpenGLWindow::setupMatrix()
 {
     QMatrix4x4 matrix;
-    matrix.ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
+    matrix.ortho(0.0f, 80.0f, 0.0f, 80.0f, 0.1f, 100.0f);
     matrix.translate(0, 0, -2);
     matrix.rotate(rotationAngle);
-
+    matrix.scale(scaleFactor);
     mProgram->setUniformValue(m_matrixUniform, matrix);
 }
 
@@ -79,10 +79,41 @@ void OpenGLWindow::paintGL()
     glClear(GL_COLOR_BUFFER_BIT);
     mProgram->bind();
     setupMatrix();
-
+    
+    addFilePoints("Resources/Ladakh.txt",1,1,0);
+    addFilePoints("Resources/JandK.txt", 0.5,0.5,0.5);
+    addFilePoints("Resources/HP.txt", 0.5,0.5,1);
+    
     drawVertices(mVertices, mColors);
+}
 
-    mProgram->release();
+void OpenGLWindow::addFilePoints(QString s,float a, float b, float c) {
+    QFile file(s);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug() << "Failed to open file:" << file.errorString();
+        return;
+    }
+
+    QTextStream in(&file);
+
+    while (!in.atEnd())
+    {
+        QString line = in.readLine();
+        QStringList coordinates = line.split(',');
+
+        if (coordinates.size() == 2)
+        {
+            // Add coordinates to mVertices
+            float x = coordinates[0].toFloat();
+            float y = coordinates[1].toFloat();
+            mVertices << x << y<<0;
+            mColors << a << b << c;
+        }
+    }
+
+    file.close();
 }
 
 void OpenGLWindow::updateShape(QVector<GLfloat>& vertices, QVector<GLfloat>& colors)
@@ -94,13 +125,14 @@ void OpenGLWindow::updateShape(QVector<GLfloat>& vertices, QVector<GLfloat>& col
 
 void OpenGLWindow::drawVertices(const QVector<GLfloat>& vertices, const QVector<GLfloat>& colors)
 {
-    glVertexAttribPointer(m_posAttr, 2, GL_FLOAT, GL_FALSE, 0, vertices.data());
+
+    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, vertices.data());
     glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, colors.data());
 
     glEnableVertexAttribArray(m_posAttr);
     glEnableVertexAttribArray(m_colAttr);
 
-    glDrawArrays(GL_LINES, 0, vertices.size() / 2);
+    glDrawArrays(GL_LINE_LOOP, 0, vertices.size() / 3);
 
     glDisableVertexAttribArray(m_colAttr);
     glDisableVertexAttribArray(m_posAttr);
@@ -120,4 +152,37 @@ void OpenGLWindow::mouseMoveEvent(QMouseEvent* event)
         update();
     }
     lastPos = event->pos();
+}
+
+void OpenGLWindow::wheelEvent(QWheelEvent* event)
+{
+    if (event->angleDelta().y() > 0) {
+        zoomIn();
+    }
+    else {
+       zoomOut();
+
+    }
+}
+
+// Assuming you have a zoom factor, for instance, zoomFactor = 1.1 for 10% zoom in
+
+void OpenGLWindow::zoomIn()
+
+{
+
+    scaleFactor *= 2.0f;
+
+    update(); // Trigger repaint
+
+}
+
+void OpenGLWindow::zoomOut()
+
+{
+
+    scaleFactor /= 2.0f;
+
+    update(); // Trigger repaint
+
 }
