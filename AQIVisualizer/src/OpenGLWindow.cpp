@@ -4,6 +4,10 @@
 #include <QOpenGLPaintDevice>
 #include <QOpenGLShaderProgram>
 #include <QPainter>
+#include <QRandomGenerator>
+#include <QDomDocument>
+#include "Point3D.h"
+#include "KMLReader.h"
 
 OpenGLWindow::OpenGLWindow(const QColor& background, QWidget* parent) : mBackground(background)
 {
@@ -33,6 +37,7 @@ void OpenGLWindow::reset()
 
 void OpenGLWindow::initializeGL()
 {
+    // Vertex shader source code
     static const char* vertexShaderSource =
         "attribute highp vec4 posAttr;\n"
         "attribute lowp vec4 colAttr;\n"
@@ -43,6 +48,7 @@ void OpenGLWindow::initializeGL()
         "   gl_Position = matrix * posAttr;\n"
         "}\n";
 
+    // Fragment shader source code
     static const char* fragmentShaderSource =
         "varying lowp vec4 col;\n"
         "void main() {\n"
@@ -51,11 +57,13 @@ void OpenGLWindow::initializeGL()
 
     initializeOpenGLFunctions();
 
+    // Create and link shader program
     mProgram = new QOpenGLShaderProgram(this);
     mProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
     mProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
     mProgram->link();
 
+    // Get attribute and uniform locations
     m_posAttr = mProgram->attributeLocation("posAttr");
     Q_ASSERT(m_posAttr != -1);
     m_colAttr = mProgram->attributeLocation("colAttr");
@@ -67,7 +75,7 @@ void OpenGLWindow::initializeGL()
 void OpenGLWindow::setupMatrix()
 {
     QMatrix4x4 matrix;
-    matrix.ortho(0.0f, 80.0f, 0.0f, 80.0f, 0.1f, 100.0f);
+    matrix.ortho(-40.0f, 40.0f, -40.0f, 40.0f, -100.0f, 100.0f);
     matrix.translate(0, 0, -2);
     matrix.rotate(rotationAngle);
     matrix.scale(scaleFactor);
@@ -79,60 +87,39 @@ void OpenGLWindow::paintGL()
     glClear(GL_COLOR_BUFFER_BIT);
     mProgram->bind();
     setupMatrix();
-    
-    addFilePoints("Resources/Ladakh.txt",1,1,0);
-    addFilePoints("Resources/JandK.txt", 0.5,0.5,0.5);
-    addFilePoints("Resources/HP.txt", 0.5,0.5,1);
-    
-    drawVertices(mVertices, mColors);
-}
 
-void OpenGLWindow::addFilePoints(QString s,float a, float b, float c) {
-    QFile file(s);
-
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        qDebug() << "Failed to open file:" << file.errorString();
-        return;
+    // Draw each shape with its vertices and colors
+    for (int i = 0; i < mShapeVertices.size(); i++) {
+        drawVertices(mShapeVertices[i], mShapeColors[i], GL_POLYGON);
     }
-
-    QTextStream in(&file);
-
-    while (!in.atEnd())
-    {
-        QString line = in.readLine();
-        QStringList coordinates = line.split(',');
-
-        if (coordinates.size() == 2)
-        {
-            // Add coordinates to mVertices
-            float x = coordinates[0].toFloat();
-            float y = coordinates[1].toFloat();
-            mVertices << x << y<<0;
-            mColors << a << b << c;
-        }
-    }
-
-    file.close();
+    mProgram->release();
 }
 
 void OpenGLWindow::updateShape(QVector<GLfloat>& vertices, QVector<GLfloat>& colors)
 {
     mVertices = vertices;
     mColors = colors;
-    emit shapesUpdated();
+    update();
 }
 
-void OpenGLWindow::drawVertices(const QVector<GLfloat>& vertices, const QVector<GLfloat>& colors)
+void OpenGLWindow::updateShape(QVector<QVector<GLfloat>>& vertices, QVector<QVector<GLfloat>>& colors)
 {
+    mShapeVertices = vertices;
+    mShapeColors = colors;
+    update();
+}
 
-    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, vertices.data());
+void OpenGLWindow::drawVertices(const QVector<GLfloat> vertices, const QVector<GLfloat> colors, GLenum mode)
+{
+    // Set attribute pointers
+    glVertexAttribPointer(m_posAttr, 2, GL_FLOAT, GL_FALSE, 0, vertices.data());
     glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, colors.data());
 
     glEnableVertexAttribArray(m_posAttr);
     glEnableVertexAttribArray(m_colAttr);
 
-    glDrawArrays(GL_LINE_LOOP, 0, vertices.size() / 3);
+    // Draw vertices
+    glDrawArrays(mode, 0, vertices.size() / 2);
 
     glDisableVertexAttribArray(m_colAttr);
     glDisableVertexAttribArray(m_posAttr);
@@ -145,8 +132,8 @@ void OpenGLWindow::mouseMoveEvent(QMouseEvent* event)
 
     if (event->buttons() & Qt::LeftButton)
     {
-        QQuaternion rotX = QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.0f, 0.5f * dx);
-        QQuaternion rotY = QQuaternion::fromAxisAndAngle(1.0f, 0.0f, 0.0f, 0.5f * dy);
+        QQuaternion rotX = QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.0f, 0.1f * dx);
+        QQuaternion rotY = QQuaternion::fromAxisAndAngle(1.0f, 0.0f, 0.0f, 0.1f * dy);
 
         rotationAngle = rotX * rotY * rotationAngle;
         update();
@@ -160,29 +147,18 @@ void OpenGLWindow::wheelEvent(QWheelEvent* event)
         zoomIn();
     }
     else {
-       zoomOut();
-
+        zoomOut();
     }
 }
 
-// Assuming you have a zoom factor, for instance, zoomFactor = 1.1 for 10% zoom in
-
 void OpenGLWindow::zoomIn()
-
 {
-
-    scaleFactor *= 2.0f;
-
-    update(); // Trigger repaint
-
+    scaleFactor *= 1.1f;
+    update();
 }
 
 void OpenGLWindow::zoomOut()
-
 {
-
-    scaleFactor /= 2.0f;
-
-    update(); // Trigger repaint
-
+    scaleFactor /= 1.1f;
+    update();
 }

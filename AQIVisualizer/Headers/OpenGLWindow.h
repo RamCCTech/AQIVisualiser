@@ -20,6 +20,7 @@ public:
     OpenGLWindow(const QColor& background, QWidget* parent);
     ~OpenGLWindow();
     void updateShape(QVector<GLfloat>& vertices, QVector<GLfloat>& colors);
+    void updateShape(QVector<QVector<GLfloat>>& vertices, QVector<QVector<GLfloat>>& colors);
     void mouseMoveEvent(QMouseEvent* event);
 
 protected:
@@ -30,10 +31,10 @@ protected:
 private:
     void reset();
     void setupMatrix();
-    void drawVertices(const QVector<GLfloat>& vertices, const QVector<GLfloat>& colors);
+    void drawVertices(const QVector<GLfloat> vertices, const QVector<GLfloat> colors, GLenum mode);
     void zoomOut();
     void zoomIn();
-    void addFilePoints(QString s, float a, float b, float c);
+    //void addFilePoints(QString s, QVector<GLfloat>& vertices, QVector<GLfloat>& colors, float a, float b, float c);
 
 private:
     bool mAnimating = false;
@@ -55,5 +56,7 @@ private:
 
     QVector<GLfloat> mVertices;
     QVector<GLfloat> mColors;
+    QVector<QVector<GLfloat>> mShapeColors;
+    QVector<QVector<GLfloat>> mShapeVertices;
     float scaleFactor=1;
 };

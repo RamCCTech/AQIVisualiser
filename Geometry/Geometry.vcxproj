@@ -156,14 +156,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\framework.h" />
-    <ClInclude Include="Headers\Geometry.h" />
     <ClInclude Include="Headers\Line.h" />
     <ClInclude Include="Headers\pch.h" />
     <ClInclude Include="Headers\Point3D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="src\Geometry.cpp" />
     <ClCompile Include="src\Line.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

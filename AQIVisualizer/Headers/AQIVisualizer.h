@@ -13,6 +13,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
+#include "State.h"
 
 class AQIVisualizer : public QMainWindow
 {
@@ -24,8 +25,13 @@ public:
 
 private:
     void setupUi();
-    void setupTableModel();
-
+    void addRowToTable(QString name,int aqi);
+    void loadFile();
+    void loadAQIData(const QString& filePath);
+    void updateAQI();
+    void updateAQIInListView(std::string name, int aqi);
+    void updateStateColor();
+    void displayMap();
 private:
     QWidget* mCentralWidget;
     QWidget* mGridLayoutWidget;
@@ -37,4 +43,12 @@ private:
     QDateEdit* mDateEdit;
     OpenGLWindow* mOpenGLWidget;
     QTableView* mTableView;
+    QPushButton* mPushButton;
+    QPushButton* mPushButton1;
+    QStandardItemModel* mListModel;
+    std::map<std::string, std::map<std::string, int>> mAQIData;
+    std::vector<State> mStates;
+    QVector<QVector<GLfloat>> mStateVertices;
+    QVector<QVector<GLfloat>> mStateColors;
+    std::map<std::string, int> mSelectedDateAQI;
 };

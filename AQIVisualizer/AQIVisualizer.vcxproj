@@ -38,7 +38,7 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>6.6.1_msvc2019_64</QtInstall>
-    <QtModules>core;gui;opengl;openglwidgets;widgets</QtModules>
+    <QtModules>core;gui;widgets;opengl;openglwidgets;xml</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
@@ -108,6 +108,12 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\JSONReader.cpp" />
+    <ClCompile Include="src\KMLReader.cpp" />
+    <ClCompile Include="src\State.cpp" />
+    <ClInclude Include="Headers\JSONReader.h" />
+    <ClInclude Include="Headers\KMLReader.h" />
+    <ClInclude Include="Headers\State.h" />
     <QtRcc Include="AQIVisualizer.qrc" />
     <QtMoc Include="Headers\AQIVisualizer.h" />
     <ClCompile Include="src\AQIVisualizer.cpp" />
@@ -122,6 +128,10 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="AQIVisualizer.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\aqi_data.json" />
+    <None Include="Resources\tem.kml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
