@@ -39,17 +39,14 @@ void OpenGLWindow::initializeGL()
 {
     // Vertex shader source code
     static const char* vertexShaderSource =
-    "attribute highp vec4 posAttr;\n"
-    "attribute lowp vec4 colAttr;\n"
-    "attribute highp vec3 normalAttr;\n" // New normal attribute
-    "varying lowp vec4 col;\n"
-    "varying highp vec3 normal;\n"       // New varying normal
-    "uniform highp mat4 matrix;\n"
-    "void main() {\n"
-    "   col = colAttr;\n"
-    "   normal = normalAttr;\n"         // Pass normal to the fragment shader
-    "   gl_Position = matrix * posAttr;\n"
-    "}\n";
+        "attribute highp vec4 posAttr;\n"
+        "attribute lowp vec4 colAttr;\n"
+        "varying lowp vec4 col;\n"
+        "uniform highp mat4 matrix;\n"
+        "void main() {\n"
+        "   col = colAttr;\n"
+        "   gl_Position = matrix * posAttr;\n"
+        "}\n";
 
     // Fragment shader source code
     static const char* fragmentShaderSource =
@@ -114,7 +111,6 @@ void OpenGLWindow::updateShape(QVector<QVector<GLfloat>>& vertices, QVector<QVec
 
 void OpenGLWindow::drawVertices(const QVector<GLfloat> vertices, const QVector<GLfloat> colors, GLenum mode)
 {
-    glEnable(GL_DEPTH_TEST);
     // Set attribute pointers
     glVertexAttribPointer(m_posAttr, 2, GL_FLOAT, GL_FALSE, 0, vertices.data());
     glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, colors.data());

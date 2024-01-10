@@ -60,19 +60,24 @@ void LegendWidget::setupUi()
 void LegendWidget::addLegendItem(const QString& text, const QColor& color)
 {
     QLabel* legendItem = new QLabel(this);
-
-   
     legendItem->setText(text);
+
+    // Calculate the luminance of the background color to determine the text color
+    double luminance = (0.299 * color.red() + 0.587 * color.green() + 0.114 * color.blue()) / 255.0;
+
+    // Choose white or black text based on the background luminance
+    QString textColor = (luminance > 0.5) ? "color: black;" : "color: white;";
 
     // Add padding to the legend item
     int padding = 5;
+
+    // Set the style sheet with background color, text color, and padding
     legendItem->setStyleSheet("background-color: rgb(" +
         QString::number(color.red()) + "," +
         QString::number(color.green()) + "," +
         QString::number(color.blue()) + ");" +
+        textColor +
         "padding: " + QString::number(padding) + "px;");
-
-    //legendItem->setFixedHeight(30);  // Adjust the height as needed
 
     mLegendItems.push_back(legendItem);
 }
