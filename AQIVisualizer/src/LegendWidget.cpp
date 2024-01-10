@@ -34,7 +34,8 @@ void LegendWidget::setupUi()
 
     // Create and configure QLabel for "AQI Levels" heading
     QLabel* aqiHeadingLabel = new QLabel("AQI Levels:", this);
-    aqiHeadingLabel->setStyleSheet("font-size: 14pt; font-weight: bold;"); // Increase text size and make it bold
+    aqiHeadingLabel->setAlignment(Qt::AlignCenter);  // Center the text
+    aqiHeadingLabel->setStyleSheet("font-size: 18pt; font-weight: bold; color: #336699;"); // Increase text size, make it bold, and set a shade of blue color
 
     // Add the "AQI Levels" heading to the layout
     itemsLayout->addWidget(aqiHeadingLabel);

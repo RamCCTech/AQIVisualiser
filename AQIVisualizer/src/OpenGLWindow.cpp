@@ -90,7 +90,7 @@ void OpenGLWindow::paintGL()
 
     // Draw each shape with its vertices and colors
     for (int i = 0; i < mShapeVertices.size(); i++) {
-        drawVertices(mShapeVertices[i], mShapeColors[i], GL_POLYGON);
+        drawVertices(mShapeVertices[i], mShapeColors[i], GL_TRIANGLE_FAN);
     }
     mProgram->release();
 }
@@ -111,6 +111,7 @@ void OpenGLWindow::updateShape(QVector<QVector<GLfloat>>& vertices, QVector<QVec
 
 void OpenGLWindow::drawVertices(const QVector<GLfloat> vertices, const QVector<GLfloat> colors, GLenum mode)
 {
+    glEnable(GL_DEPTH_TEST);
     // Set attribute pointers
     glVertexAttribPointer(m_posAttr, 2, GL_FLOAT, GL_FALSE, 0, vertices.data());
     glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, colors.data());

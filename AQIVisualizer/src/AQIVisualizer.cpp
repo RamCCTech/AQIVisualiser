@@ -1,6 +1,7 @@
-﻿#include "stdafx.h"
+﻿// AQIVisualizer.cpp
+
+#include "stdafx.h"
 #include "AQIVisualizer.h"
-#include "State.h"
 #include "KMLReader.h"
 #include "JSONReader.h"
 #include "LegendWidget.h"
@@ -10,7 +11,7 @@ AQIVisualizer::AQIVisualizer(QWidget* parent)
 {
     setupUi();
     connect(mPushButton, &QPushButton::clicked, this, &AQIVisualizer::loadFile);
-    connect(mPushButton1, &QPushButton::clicked, this, &AQIVisualizer::updateAQI);
+    connect(calendarWidget, &QCalendarWidget::selectionChanged, this, &AQIVisualizer::updateAQI);
     loadAQIData("Resources/aqi_data.json");
 
     // Initialize AQI values for each state in the table
@@ -29,54 +30,73 @@ void AQIVisualizer::setupUi()
     mCentralWidget = new QWidget(this);
 
     // Create a vertical layout for the central widget
-    QVBoxLayout* centralLayout = new QVBoxLayout(mCentralWidget);
-
-    // Create a horizontal layout for the top part (buttons, date edit)
-    QHBoxLayout* topLayout = new QHBoxLayout();
-
-    // Create "Load Country" button
-    mPushButton = new QPushButton("Load Country", mCentralWidget);
-    topLayout->addWidget(mPushButton);
-
-    // Create "Selected Date" label
-    mLabel = new QLabel("Selected Date", mCentralWidget);
-    topLayout->addWidget(mLabel);
-
-    // Create QDateEdit for date selection
-    mDateEdit = new QDateEdit(mCentralWidget);
-    mDateEdit->setDisplayFormat("dd/MM/yyyy");
-    topLayout->addWidget(mDateEdit);
-
-    QDate currentDate = QDate::currentDate();
-    QDate minDate(2023, 1, 1);
-    QDate maxDate(2023, 12, 31);
-    mDateEdit->setMinimumDate(minDate);
-    mDateEdit->setMaximumDate(maxDate);
-    mDateEdit->setDate(currentDate);
-
-    // Create "Fetch AQI" button
-    mPushButton1 = new QPushButton("Fetch AQI", mCentralWidget);
-    topLayout->addWidget(mPushButton1);
-
-    // Add the top layout to the central layout
-    centralLayout->addLayout(topLayout);
-
-    // Create a horizontal layout for the OpenGLWidget, LegendWidget, and TableView
-    QHBoxLayout* bottomLayout = new QHBoxLayout();
+    QHBoxLayout* centralLayout = new QHBoxLayout(mCentralWidget);
 
     // Create the OpenGLWidget
     mOpenGLWidget = new OpenGLWindow(QColor(0, 0, 0), mCentralWidget);
-    bottomLayout->addWidget(mOpenGLWidget, 1);  // Set stretch factor to 1
+    centralLayout->addWidget(mOpenGLWidget, 1);  // Set stretch factor to 1
 
     // Set margins around the OpenGLWidget
     QMargins margins(10, 10, 10, 10);
-    bottomLayout->setContentsMargins(margins);
+    centralLayout->setContentsMargins(margins);
+
+    QVBoxLayout* mVerticalLayout1 = new QVBoxLayout(mCentralWidget);
+    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+    QSizePolicy sizePolicy1(QSizePolicy::Maximum, QSizePolicy::Maximum);
+
+    // Create "Load Country" button
+    mPushButton = new QPushButton("Load Country", mCentralWidget);
+    mPushButton->setSizePolicy(sizePolicy1);
+
+    // Set styles for the button
+    mPushButton->setStyleSheet(
+        "QPushButton {"
+        "   font-size: 14pt;"
+        "   background-color: #4CAF50;"  // Set background color to a green shade
+        "   color: white;"               // Set text color to white
+        "   border: 2px solid #4CAF50;"  // Set border color to match the background color
+        "   border-radius: 8px;"         // Set border radius for rounded corners
+        "   padding: 8px 16px;"          // Add padding for a more spacious appearance
+        "}"
+        "QPushButton:hover {"
+        "   background-color: #45a049;"  // Change background color on hover
+        "}"
+        "QPushButton:pressed {"
+        "   background-color: #349846;"  // Change background color when pressed
+        "}"
+    );
+
+    mVerticalLayout1->addWidget(mPushButton, 0, Qt::AlignHCenter);  // Add the button and center it horizontally
+
+    // Create "Selected Date" label
+    mLabel = new QLabel("", mCentralWidget);
+    mLabel->setSizePolicy(sizePolicy);
+    mLabel->setAlignment(Qt::AlignCenter);
+    QFont boldFont = mLabel->font();
+    boldFont.setPointSize(16);  // Set the font size to 16 (you can adjust the size as needed)
+    boldFont.setBold(true);
+    mLabel->setFont(boldFont);
+    mLabel->setStyleSheet("QLabel { color: #336699; }");  // Set text color to a shade of blue
+    mVerticalLayout1->addWidget(mLabel);
+
+    // Create a small calendar widget
+    calendarWidget = new QCalendarWidget(mCentralWidget);
+    calendarWidget->setGridVisible(true);  // You can customize as needed
+    calendarWidget->setSizePolicy(sizePolicy);
+
+    // Set the maximum and minimum date of the calendar to 2023 start and end
+    QDate minDate(2023, 1, 1);
+    QDate maxDate(2023, 12, 31);
+    calendarWidget->setMaximumDate(maxDate);
+    calendarWidget->setMinimumDate(minDate);
+    mVerticalLayout1->addWidget(calendarWidget);
 
     // Create the LegendWidget
     LegendWidget* legendWidget = new LegendWidget(mCentralWidget);
-    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
     legendWidget->setSizePolicy(sizePolicy);
-    bottomLayout->addWidget(legendWidget);
+    mVerticalLayout1->addWidget(legendWidget);
+
+    centralLayout->addLayout(mVerticalLayout1);
 
     // Create the TableView
     mTableView = new QTableView(mCentralWidget);
@@ -86,21 +106,33 @@ void AQIVisualizer::setupUi()
     mListModel->setHorizontalHeaderLabels(QStringList() << "State and UT" << "AQI Level");
     mTableView->setModel(mListModel);
 
-    // Add the OpenGLWidget and TableView to the bottom layout
-    bottomLayout->addWidget(mTableView);
+    // Set bold font for the horizontal header
+    QFont headerFont = mTableView->horizontalHeader()->font();
+    headerFont.setBold(true);
+    mTableView->horizontalHeader()->setFont(headerFont);
+    headerFont.setPointSize(headerFont.pointSize() + 2);  // Increase font size by 2 points
+    mTableView->horizontalHeader()->setFont(headerFont);
 
-    // Add the bottom layout to the central layout
-    centralLayout->addLayout(bottomLayout);
+    // Set horizontal header properties
+    mTableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);  // Allow columns to stretch
+    mTableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);  // Allow resizing for the "AQI Level" column
+
+    // Set the background color for the table
+    mTableView->setStyleSheet(
+        "QTableView {"
+        "   background-color: #f0f0f0;"  // Set a light gray background color
+        "   alternate-background-color: #e0e0e0;"  // Set an alternate light gray background color for alternating rows
+        "   border: 2px solid #d3d3d3;"  // Set a light border color
+        "   gridline-color: #a8a8a8;"  // Set the color of the grid lines
+        "}");
+
+    // Add the OpenGLWidget and TableView to the bottom layout
+    centralLayout->addWidget(mTableView);
 
     // Set the central widget
     setCentralWidget(mCentralWidget);
     showMaximized();
 }
-
-
-
-
-
 
 void AQIVisualizer::loadFile()
 {
@@ -159,7 +191,7 @@ void AQIVisualizer::loadAQIData(const QString& filePath)
 void AQIVisualizer::updateAQI()
 {
     // Get the selected date from mDateEdit
-    QDate selectedDate = mDateEdit->date();
+    QDate selectedDate = calendarWidget->selectedDate();
 
     // Create a copy of mStates to avoid iterator invalidation
     std::vector<State> statesCopy = mStates;
@@ -177,7 +209,7 @@ void AQIVisualizer::updateAQI()
         }
     }
     QString qs = "Selected Date: ";
-    mLabel->setText(qs+QString::fromStdString(st));
+    mLabel->setText(qs + QString::fromStdString(st));
     // Display the updated map
     displayMap();
 }
