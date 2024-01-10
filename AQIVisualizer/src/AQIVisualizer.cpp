@@ -5,6 +5,9 @@
 #include "KMLReader.h"
 #include "JSONReader.h"
 #include "LegendWidget.h"
+#include <QtConcurrent/QtConcurrentRun>
+#include <QProgressDialog>
+#include <QThread>
 
 AQIVisualizer::AQIVisualizer(QWidget* parent)
     : QMainWindow(parent)
@@ -136,18 +139,58 @@ void AQIVisualizer::setupUi()
 
 void AQIVisualizer::loadFile()
 {
-    KMLReader reader;
-    mStates = reader.parseKMLFromFile("Resources/k.txt");
+    // Create and configure a progress dialog
+    QProgressDialog progressDialog("Loading File...", "Cancel", 0, 100, this);
+    progressDialog.setWindowModality(Qt::WindowModal);
+    progressDialog.setWindowTitle("Loading");
 
-    // Set initial AQI values to 0 for each state
-    for (State& s : mStates) {
-        s.setAQIData(mAQIData[s.name()]);
-        mSelectedDateAQI[s.name()] = 0;
+    // Connect signals and slots for progress updates
+    connect(this, &AQIVisualizer::loadingStarted, &progressDialog, &QProgressDialog::show);
+    connect(this, &AQIVisualizer::loadingProgress, &progressDialog, &QProgressDialog::setValue);
+    connect(this, &AQIVisualizer::loadingFinished, &progressDialog, &QProgressDialog::reset);
+
+    // Start the loading process in a separate thread
+    QFuture<void> future = QtConcurrent::run([this, &progressDialog]() {
+        emit loadingStarted();
+
+        // Your existing file loading logic
+        KMLReader reader;
+        mStates = reader.parseKMLFromFile("Resources/k.txt");
+
+        // Set initial AQI values to 0 for each state
+        for (State& s : mStates) {
+            s.setAQIData(mAQIData[s.name()]);
+            mSelectedDateAQI[s.name()] = 0;
+        }
+
+        // Display the map after loading file
+        displayMap();
+
+        emit loadingFinished();
+        });
+
+    // Connect the progress dialog to the loading process
+    progressDialog.setMinimum(0);
+    progressDialog.setMaximum(0);
+
+    while (!future.isFinished()) {
+        // Calculate progress (modify this based on your actual progress)
+        int progressValue = static_cast<int>(future.progressValue() * 100.0 / future.progressMaximum());
+        emit loadingProgress(progressValue);
+
+        qApp->processEvents();
+        if (progressDialog.wasCanceled()) {
+            // User clicked Cancel, stop the loading process
+            future.cancel();
+            break;
+        }
     }
 
-    // Display the map after loading file
-    displayMap();
+    // Close the progress dialog when loading is complete
+    progressDialog.close();
 }
+
+
 
 void AQIVisualizer::displayMap()
 {
@@ -185,33 +228,72 @@ void AQIVisualizer::displayMap()
 void AQIVisualizer::loadAQIData(const QString& filePath)
 {
     JSONReader jr;
-    mAQIData = jr.readJsonFile(filePath);
+    mAQIData = jr.readJsonFile("Resources/aqi_data.json");
 }
 
 void AQIVisualizer::updateAQI()
 {
-    // Get the selected date from mDateEdit
-    QDate selectedDate = calendarWidget->selectedDate();
+    // Create and configure a progress dialog for the update process
+    QProgressDialog progressDialog("Updating AQI...", "Cancel", 0, 100, this);
+    progressDialog.setWindowModality(Qt::WindowModal);
+    progressDialog.setWindowTitle("Updating");
 
-    // Create a copy of mStates to avoid iterator invalidation
-    std::vector<State> statesCopy = mStates;
+    // Connect signals and slots for progress updates
+    connect(this, &AQIVisualizer::loadingStarted, &progressDialog, &QProgressDialog::show);
+    connect(this, &AQIVisualizer::loadingProgress, &progressDialog, &QProgressDialog::setValue);
+    connect(this, &AQIVisualizer::loadingFinished, &progressDialog, &QProgressDialog::reset);
 
-    // Iterate through the states copy and update the AQI in the list view
-    std::string st = selectedDate.toString("dd/MM/yyyy").toStdString();
-    for (State& s : statesCopy) {
-        if (s.getAQIData().count(st) > 0) {
-            int aqi = s.getAQIData().at(st);
-            mSelectedDateAQI[s.name()] = aqi;
-            updateAQIInListView(s.name(), aqi);
+    // Start the update process in a separate thread
+    QFuture<void> future = QtConcurrent::run([this, &progressDialog]() {
+        emit loadingStarted();
+
+        // Your existing update logic
+        // Get the selected date from mDateEdit
+        QDate selectedDate = calendarWidget->selectedDate();
+
+        // Create a copy of mStates to avoid iterator invalidation
+        std::vector<State> statesCopy = mStates;
+
+        // Iterate through the states copy and update the AQI in the list view
+        std::string st = selectedDate.toString("dd/MM/yyyy").toStdString();
+        for (State& s : statesCopy) {
+            if (s.getAQIData().count(st) > 0) {
+                int aqi = s.getAQIData().at(st);
+                mSelectedDateAQI[s.name()] = aqi;
+                updateAQIInListView(s.name(), aqi);
+            }
+            else {
+                updateAQIInListView(s.name(), 0);
+            }
         }
-        else {
-            updateAQIInListView(s.name(), 0);
+        QString qs = "Selected Date: ";
+        mLabel->setText(qs + QString::fromStdString(st));
+        // Display the updated map
+        displayMap();
+
+        emit loadingFinished();
+        });
+
+    // Connect the progress dialog to the update process
+    progressDialog.setMinimum(0);
+    progressDialog.setMaximum(0);
+    progressDialog.setCancelButton(nullptr);
+
+    while (!future.isFinished()) {
+        // Calculate progress (modify this based on your actual progress)
+        int progressValue = static_cast<int>(future.progressValue() * 100.0 / future.progressMaximum());
+        emit loadingProgress(progressValue);
+
+        qApp->processEvents();
+        if (progressDialog.wasCanceled()) {
+            // User clicked Cancel, stop the update process
+            future.cancel();
+            break;
         }
     }
-    QString qs = "Selected Date: ";
-    mLabel->setText(qs + QString::fromStdString(st));
-    // Display the updated map
-    displayMap();
+
+    // Close the progress dialog when updating is complete
+    progressDialog.close();
 }
 
 void AQIVisualizer::updateAQIInListView(std::string name, int aqi)

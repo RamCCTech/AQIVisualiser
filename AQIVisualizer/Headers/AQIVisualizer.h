@@ -14,6 +14,10 @@
 class AQIVisualizer : public QMainWindow
 {
     Q_OBJECT
+signals:
+    void loadingStarted();
+    void loadingProgress(int value);
+    void loadingFinished();
 
 public:
     AQIVisualizer(QWidget* parent = nullptr);
