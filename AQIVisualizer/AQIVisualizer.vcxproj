@@ -66,10 +66,10 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\RamWorkspace\AQIVisualizer\Geometry\Headers;D:\RamWorkspace\AQIVisualizer\AQIVisualizer\Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Geometry\Headers;Headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>D:\RamWorkspace\AQIVisualizer\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Geometry.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -108,12 +108,14 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\LegendWidget.cpp" />
     <ClCompile Include="src\JSONReader.cpp" />
     <ClCompile Include="src\KMLReader.cpp" />
     <ClCompile Include="src\State.cpp" />
     <ClInclude Include="Headers\JSONReader.h" />
     <ClInclude Include="Headers\KMLReader.h" />
     <ClInclude Include="Headers\State.h" />
+    <QtMoc Include="Headers\LegendWidget.h" />
     <QtRcc Include="AQIVisualizer.qrc" />
     <QtMoc Include="Headers\AQIVisualizer.h" />
     <ClCompile Include="src\AQIVisualizer.cpp" />
@@ -131,7 +133,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\aqi_data.json" />
-    <None Include="Resources\tem.kml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\k.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

@@ -1,8 +1,9 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "AQIVisualizer.h"
 #include "State.h"
 #include "KMLReader.h"
 #include "JSONReader.h"
+#include "LegendWidget.h"
 
 AQIVisualizer::AQIVisualizer(QWidget* parent)
     : QMainWindow(parent)
@@ -24,28 +25,27 @@ AQIVisualizer::~AQIVisualizer()
 
 void AQIVisualizer::setupUi()
 {
-    resize(830, 625);
+    // Create the central widget
     mCentralWidget = new QWidget(this);
 
-    mGridLayoutWidget = new QWidget(mCentralWidget);
-    mGridLayoutWidget->setGeometry(QRect(0, 0, 830, 625));
-    mGridLayout = new QGridLayout(mGridLayoutWidget);
+    // Create a vertical layout for the central widget
+    QVBoxLayout* centralLayout = new QVBoxLayout(mCentralWidget);
 
-    mVerticalLayout = new QVBoxLayout();
+    // Create a horizontal layout for the top part (buttons, date edit)
+    QHBoxLayout* topLayout = new QHBoxLayout();
 
-    mHorizontalLayout = new QHBoxLayout();
+    // Create "Load Country" button
+    mPushButton = new QPushButton("Load Country", mCentralWidget);
+    topLayout->addWidget(mPushButton);
 
-    QSizePolicy sizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
+    // Create "Selected Date" label
+    mLabel = new QLabel("Selected Date", mCentralWidget);
+    topLayout->addWidget(mLabel);
 
-    mPushButton = new QPushButton("Load Country", mGridLayoutWidget);
-    mHorizontalLayout->addWidget(mPushButton);
-
-    mLabel = new QLabel("Selected Date", mGridLayoutWidget);
-    mHorizontalLayout->addWidget(mLabel);
-
-    mDateEdit = new QDateEdit(mGridLayoutWidget);
+    // Create QDateEdit for date selection
+    mDateEdit = new QDateEdit(mCentralWidget);
     mDateEdit->setDisplayFormat("dd/MM/yyyy");
-    mHorizontalLayout->addWidget(mDateEdit);
+    topLayout->addWidget(mDateEdit);
 
     QDate currentDate = QDate::currentDate();
     QDate minDate(2023, 1, 1);
@@ -54,27 +54,53 @@ void AQIVisualizer::setupUi()
     mDateEdit->setMaximumDate(maxDate);
     mDateEdit->setDate(currentDate);
 
-    mPushButton1 = new QPushButton("Fetch AQI", mGridLayoutWidget);
-    mHorizontalLayout->addWidget(mPushButton1);
+    // Create "Fetch AQI" button
+    mPushButton1 = new QPushButton("Fetch AQI", mCentralWidget);
+    topLayout->addWidget(mPushButton1);
 
-    mHorizontalLayout1 = new QHBoxLayout();
+    // Add the top layout to the central layout
+    centralLayout->addLayout(topLayout);
 
+    // Create a horizontal layout for the OpenGLWidget, LegendWidget, and TableView
+    QHBoxLayout* bottomLayout = new QHBoxLayout();
+
+    // Create the OpenGLWidget
     mOpenGLWidget = new OpenGLWindow(QColor(0, 0, 0), mCentralWidget);
-    mHorizontalLayout1->addWidget(mOpenGLWidget);
+    bottomLayout->addWidget(mOpenGLWidget, 1);  // Set stretch factor to 1
 
-    mTableView = new QTableView(mGridLayoutWidget);
-    mTableView->setSizePolicy(sizePolicy);
+    // Set margins around the OpenGLWidget
+    QMargins margins(10, 10, 10, 10);
+    bottomLayout->setContentsMargins(margins);
+
+    // Create the LegendWidget
+    LegendWidget* legendWidget = new LegendWidget(mCentralWidget);
+    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+    legendWidget->setSizePolicy(sizePolicy);
+    bottomLayout->addWidget(legendWidget);
+
+    // Create the TableView
+    mTableView = new QTableView(mCentralWidget);
+
+    // Create the list model for the TableView
     mListModel = new QStandardItemModel(this);
-    mListModel->setHorizontalHeaderLabels(QStringList() << "State and UT" << "AQI");
+    mListModel->setHorizontalHeaderLabels(QStringList() << "State and UT" << "AQI Level");
     mTableView->setModel(mListModel);
-    mHorizontalLayout1->addWidget(mTableView);
-    mGridLayout->addLayout(mHorizontalLayout1, 0, 0, 1, 1);
 
-    mVerticalLayout->addLayout(mHorizontalLayout);
-    mGridLayout->addLayout(mVerticalLayout, 1, 0, 1, 1);
+    // Add the OpenGLWidget and TableView to the bottom layout
+    bottomLayout->addWidget(mTableView);
 
+    // Add the bottom layout to the central layout
+    centralLayout->addLayout(bottomLayout);
+
+    // Set the central widget
     setCentralWidget(mCentralWidget);
+    showMaximized();
 }
+
+
+
+
+
 
 void AQIVisualizer::loadFile()
 {

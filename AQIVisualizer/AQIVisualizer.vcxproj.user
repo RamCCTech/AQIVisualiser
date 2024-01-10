@@ -4,9 +4,9 @@
     <ShowAllFiles>true</ShowAllFiles>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <QtLastBackgroundBuild>2024-01-07T12:54:14.4220274Z</QtLastBackgroundBuild>
+    <QtLastBackgroundBuild>2024-01-09T13:58:39.0135044Z</QtLastBackgroundBuild>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <QtLastBackgroundBuild>2024-01-07T12:54:14.8133872Z</QtLastBackgroundBuild>
+    <QtLastBackgroundBuild>2024-01-09T13:58:39.1490673Z</QtLastBackgroundBuild>
   </PropertyGroup>
 </Project>

@@ -1,10 +1,9 @@
 #include "stdafx.h"
 #include "KMLReader.h"
 #include <iostream>
-#include <vector>
-#include <regex>
-#include <sstream>
-#include <fstream>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
+#include <QBuffer>
 
 KMLReader::KMLReader() {
 }
@@ -13,56 +12,79 @@ KMLReader::~KMLReader() {
 }
 
 std::vector<State> KMLReader::parseKMLFromFile(const std::string& filePath) {
-    // Open and read KML file
-    std::ifstream kmlFile(filePath);
-    if (!kmlFile.is_open()) {
+    // Open and read KML file using Qt
+    QFile file(QString::fromStdString(filePath));
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         std::cerr << "Error: Unable to open file " << filePath << std::endl;
         return {};
     }
 
-    // Read KML content from the file
-    std::string kmlContent((std::istreambuf_iterator<char>(kmlFile)), std::istreambuf_iterator<char>());
-    kmlFile.close();
+    // Use QBuffer for parsing KML content
+    QBuffer buffer;
+    buffer.setData(file.readAll());
+    buffer.open(QIODevice::ReadOnly);
 
     // Parse KML content
-    return parseKML(kmlContent);
+    QDomDocument kmlDocument;
+    if (!kmlDocument.setContent(&buffer)) {
+        std::cerr << "Error: Unable to parse KML content from file " << filePath << std::endl;
+        return {};
+    }
+
+    // Extract Placemark data using QDomDocument
+    return parseKML(kmlDocument);
 }
 
-std::vector<State> KMLReader::parseKML(const std::string& kmlData) {
+std::vector<State> KMLReader::parseKML(const QDomDocument& kmlDocument) {
     std::vector<State> states;
 
-    // Define regex pattern for extracting Placemark data
-    std::regex placemarkRegex(R"(<Placemark>[^]*?<Data name="Name"><value>([^<]*)<\/value>[^]*?<outerBoundaryIs>[^]*?<coordinates>([^<]*)<\/coordinates>)");
+    // Get the root element of the KML document
+    QDomElement kmlRoot = kmlDocument.documentElement();
+    QDomNodeList placemarks = kmlRoot.elementsByTagName("Placemark");
 
-    std::smatch match;
-    auto start = kmlData.cbegin();
+    for (int i = 0; i < placemarks.size(); ++i) {
+        QDomElement placemark = placemarks.at(i).toElement();
 
-    while (std::regex_search(start, kmlData.cend(), match, placemarkRegex)) {
+        // Extract Name and Type data
+        QDomElement nameElement = placemark.firstChildElement("ExtendedData").firstChildElement("Data").firstChildElement("value");
+        QString name = nameElement.text();
+
+        // Note: Removed type extraction for simplicity
+
+        // Extract coordinate data
+        QDomElement coordinatesElement = placemark.firstChildElement("Polygon").firstChildElement("outerBoundaryIs").firstChildElement("LinearRing").firstChildElement("coordinates");
+        QString coordinatesStr = coordinatesElement.text();
+
+        // Process coordinate data
+        std::vector<Point3D> statePoints = processCoordinates(coordinatesStr);
+
         // Create a State object for each Placemark
         State state;
-        state.setName(match[1].str());
-
-        // Extract and process coordinate data
-        std::string coordinatesStr = match[2].str();
-        std::istringstream coordinatesStream(coordinatesStr);
-        std::string coordinatePair;
-        std::vector<Point3D> statePoints;
-
-        while (std::getline(coordinatesStream, coordinatePair, '\n')) {
-            std::istringstream coordinatePairStream(coordinatePair);
-
-            float x, y;
-            coordinatePairStream >> x >> y;
-            Point3D point(x - 80, y - 20);
-            statePoints.push_back(point);
-        }
-
+        state.setName(name.toStdString());
         state.setPoints(statePoints);
         states.push_back(state);
-
-        // Move to the next Placemark in the input
-        start = match.suffix().first;
     }
 
     return states;
+}
+
+std::vector<Point3D> KMLReader::processCoordinates(const QString& coordinatesStr) {
+    std::vector<Point3D> statePoints;
+
+    QStringList coordinatePairs = coordinatesStr.split('\n', Qt::SkipEmptyParts);
+    for (const QString& coordinatePair : coordinatePairs) {
+        QStringList coordinates = coordinatePair.split(' ', Qt::SkipEmptyParts);
+        if (coordinates.size() == 2) {
+            bool conversionSuccessX, conversionSuccessY;
+            float x = coordinates.at(0).toFloat(&conversionSuccessX);
+            float y = coordinates.at(1).toFloat(&conversionSuccessY);
+
+            if (conversionSuccessX && conversionSuccessY) {
+                Point3D point(x - 80, y - 20);
+                statePoints.push_back(point);
+            }
+        }
+    }
+
+    return statePoints;
 }

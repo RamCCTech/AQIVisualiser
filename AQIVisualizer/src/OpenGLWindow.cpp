@@ -75,7 +75,7 @@ void OpenGLWindow::initializeGL()
 void OpenGLWindow::setupMatrix()
 {
     QMatrix4x4 matrix;
-    matrix.ortho(-40.0f, 40.0f, -40.0f, 40.0f, -100.0f, 100.0f);
+    matrix.ortho(-30.0f, 30.0f, -20.0f, 20.0f, -100.0f, 100.0f);
     matrix.translate(0, 0, -2);
     matrix.rotate(rotationAngle);
     matrix.scale(scaleFactor);

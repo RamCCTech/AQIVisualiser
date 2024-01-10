@@ -55,9 +55,15 @@
     <ClCompile Include="src\KMLReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\LegendWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="Headers\OpenGLWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Headers\LegendWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -78,9 +84,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\tem.kml" />
     <None Include="Resources\aqi_data.json">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Resources\k.txt" />
   </ItemGroup>
 </Project>
