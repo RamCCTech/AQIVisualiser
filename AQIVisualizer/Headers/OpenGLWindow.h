@@ -23,7 +23,7 @@ public:
     void updateShape(QVector<GLfloat>& vertices, QVector<GLfloat>& colors);
     void updateShape(QVector<QVector<GLfloat>>& vertices, QVector<QVector<GLfloat>>& colors);
     void mouseMoveEvent(QMouseEvent* event);
-
+    void updateMatrixUniform();
 protected:
     void paintGL() override;
     void initializeGL() override;
@@ -48,8 +48,8 @@ private:
     QOpenGLShader* mFshader = nullptr;
     QOpenGLShaderProgram* mProgram = nullptr;
     QOpenGLBuffer mVbo;
-    int mVertexAttr;
-    int mNormalAttr;
+    GLint mVertexAttr = 0;
+    GLint mNormalAttr = 0;
     GLint mPosAttr = 0;
     GLint mColAttr = 0;
     GLint mMatrixUniform = 0;
@@ -63,5 +63,5 @@ private:
     QVector<GLfloat> mColors;
     QVector<QVector<GLfloat>> mShapeColors;
     QVector<QVector<GLfloat>> mShapeVertices;
-    float mScaleFactor=1;
+    GLint mScaleFactor=1;
 };

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Constants.h"
 #include "LegendWidget.h"
 
 #include "LegendWidget.h"
@@ -18,13 +19,13 @@ void LegendWidget::setupUi()
     QVBoxLayout* itemsLayout = new QVBoxLayout();
 
     // Add color legend items (customize as needed)
-    addLegendItem("0 - AQI not selected", QColor(0.50196 * 255, 0.50196 * 255, 0.50196 * 255));
-    addLegendItem("1 - Good (0 to 50)", QColor(0, 255, 0));
-    addLegendItem("2 - Moderate (51 to 100)", QColor(255, 255, 0));
-    addLegendItem("3 - Unhealthy for Sensitive Groups (101 to 150)", QColor(255, 102, 0));
-    addLegendItem("4 - Unhealthy (151 to 200)", QColor(255, 0, 0));
-    addLegendItem("5 - Very Unhealthy (201 to 300)", QColor(153, 0, 255));
-    addLegendItem("6 - Hazardous (301 and higher)", QColor(153, 0, 0));
+    addLegendItem(Constants::AQILevel0, Constants::AQIColor0);
+    addLegendItem(Constants::AQILevel1, Constants::AQIColor1);
+    addLegendItem(Constants::AQILevel2, Constants::AQIColor2);
+    addLegendItem(Constants::AQILevel3, Constants::AQIColor3);
+    addLegendItem(Constants::AQILevel4, Constants::AQIColor4);
+    addLegendItem(Constants::AQILevel5, Constants::AQIColor5);
+    addLegendItem(Constants::AQILevel6, Constants::AQIColor6);
 
     // Add the legend items to the vertical layout
     itemsLayout->addStretch();  // Add stretch to push items to the top

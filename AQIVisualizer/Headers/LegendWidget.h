@@ -17,6 +17,7 @@ private:
     void setupUi();
     void addLegendItem(const QString& text, const QColor& color);
 
+private:
     QLabel* mLegendLabel;
     std::vector<QLabel*> mLegendItems;  // Declare mLegendItems as a vector
 };

@@ -52,22 +52,7 @@
         mPushButton->setSizePolicy(sizePolicy);
 
         // Set styles for the button
-        mPushButton->setStyleSheet(
-            "QPushButton {"
-            "   font-size: 14pt;"
-            "   background-color: #4CAF50;"
-            "   color: white;"
-            "   border: 2px solid #4CAF50;" 
-            "   border-radius: 8px;"
-            "   padding: 8px 16px;"
-            "}"
-            "QPushButton:hover {"
-            "   background-color: #45a049;"
-            "}"
-            "QPushButton:pressed {"
-            "   background-color: #349846;"
-            "}"
-        );
+        mPushButton->setStyleSheet(Constants::ButtonStyleSheet);
 
         mVerticalLayout1->addWidget(mPushButton, 0, Qt::AlignHCenter);  // Add the button and center it horizontally
 
@@ -79,7 +64,7 @@
         boldFont.setPointSize(16);  // Set the font size to 16 (you can adjust the size as needed)
         boldFont.setBold(true);
         mLabel->setFont(boldFont);
-        mLabel->setStyleSheet("QLabel { color: #336699; }");  // Set text color to a shade of blue
+        mLabel->setStyleSheet(Constants::LabelStyleSheet);  // Set text color to a shade of blue
         mVerticalLayout1->addWidget(mLabel);
 
         // Create a small calendar widget
@@ -121,13 +106,7 @@
         mTableView->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);  // Allow resizing for the "AQI Level" column
 
         // Set the table styling
-        mTableView->setStyleSheet(
-            "QTableView {"
-            "   background-color: #f0f0f0;"
-            "   alternate-background-color: #e0e0e0;"
-            "   border: 2px solid #d3d3d3;"
-            "   gridline-color: #a8a8a8;"
-            "}");
+        mTableView->setStyleSheet(Constants::TableViewStyleSheet);
 
         // Add the OpenGLWidget and TableView to the bottom layout
         centralLayout->addWidget(mTableView);
