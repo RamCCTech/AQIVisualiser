@@ -4,12 +4,24 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AQIVisualizer", "AQIVisualizer\AQIVisualizer.vcxproj", "{A0DFBCB7-53B2-48C2-9FB6-59137CA97F1C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2193F518-29F7-4695-9EC7-885AE779443B} = {2193F518-29F7-4695-9EC7-885AE779443B}
+		{8EB7DE9B-B583-40C7-9F43-5A6E984E4AAA} = {8EB7DE9B-B583-40C7-9F43-5A6E984E4AAA}
+		{E8341A94-A080-4AE4-96BA-89B42542C856} = {E8341A94-A080-4AE4-96BA-89B42542C856}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Geometry", "Geometry\Geometry.vcxproj", "{8EB7DE9B-B583-40C7-9F43-5A6E984E4AAA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "State", "State\State.vcxproj", "{2193F518-29F7-4695-9EC7-885AE779443B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8EB7DE9B-B583-40C7-9F43-5A6E984E4AAA} = {8EB7DE9B-B583-40C7-9F43-5A6E984E4AAA}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileReader", "FileReader\FileReader.vcxproj", "{E8341A94-A080-4AE4-96BA-89B42542C856}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2193F518-29F7-4695-9EC7-885AE779443B} = {2193F518-29F7-4695-9EC7-885AE779443B}
+		{8EB7DE9B-B583-40C7-9F43-5A6E984E4AAA} = {8EB7DE9B-B583-40C7-9F43-5A6E984E4AAA}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

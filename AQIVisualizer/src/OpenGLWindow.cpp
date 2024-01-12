@@ -14,6 +14,10 @@ OpenGLWindow::OpenGLWindow(const QColor& background, QWidget* parent) : mBackgro
 {
     setParent(parent);
     setMinimumSize(300, 250);
+
+    const QStringList pathList = { Constants::VertexShaderPath ,Constants::FragmentShaderPath };
+    mShaderWatcher = new QFileSystemWatcher(pathList, this);
+    connect(mShaderWatcher, &QFileSystemWatcher::fileChanged, this, &OpenGLWindow::shaderWatcher);
 }
 
 OpenGLWindow::~OpenGLWindow()
@@ -38,23 +42,8 @@ void OpenGLWindow::reset()
 
 void OpenGLWindow::initializeGL()
 {
-    // Vertex shader source code
-    static const char* vertexShaderSource =
-        "attribute highp vec4 posAttr;\n"
-        "attribute lowp vec4 colAttr;\n"
-        "varying lowp vec4 col;\n"
-        "uniform highp mat4 matrix;\n"
-        "void main() {\n"
-        "   col = colAttr;\n"
-        "   gl_Position = matrix * posAttr;\n"
-        "}\n";
-
-    // Fragment shader source code
-    static const char* fragmentShaderSource =
-        "varying lowp vec4 col;\n"
-        "void main() {\n"
-        "   gl_FragColor = col;\n"
-        "}\n";
+    QString vertexShaderSource = readShader(Constants::VertexShaderPath);
+    QString fragmentShaderSource = readShader(Constants::FragmentShaderPath);
 
     initializeOpenGLFunctions();
 
@@ -78,12 +67,23 @@ void OpenGLWindow::initializeGL()
 void OpenGLWindow::setupMatrix()
 {
     QMatrix4x4 matrix;
-    matrix.ortho(-30.0f, 30.0f, -20.0f, 20.0f, -100.0f, 100.0f);
+
+    // Get the size of the OpenGL window
+    QSize screenSize = size();
+
+    // Adjust the orthographic projection matrix based on screen size
+    qreal aspectRatio = static_cast<qreal>(screenSize.width()) / screenSize.height();
+    qreal orthoWidth = 50.0f;
+    qreal orthoHeight = orthoWidth / aspectRatio;
+
+    matrix.ortho(-orthoWidth / 2, orthoWidth / 2, -orthoHeight / 2, orthoHeight / 2, -100.0f, 100.0f);
     matrix.translate(0, 0, -2);
     matrix.rotate(mRotationAngle);
     matrix.scale(mScaleFactor);
+
     mProgram->setUniformValue(mMatrixUniform, matrix);
 }
+
 
 void OpenGLWindow::paintGL()
 {
@@ -115,14 +115,14 @@ void OpenGLWindow::updateShape(QVector<QVector<GLfloat>>& vertices, QVector<QVec
 void OpenGLWindow::drawVertices(const QVector<GLfloat> vertices, const QVector<GLfloat> colors, GLenum mode)
 {
     // Set attribute pointers
-    glVertexAttribPointer(mPosAttr, 2, GL_FLOAT, GL_FALSE, 0, vertices.data());
+    glVertexAttribPointer(mPosAttr, 3, GL_FLOAT, GL_FALSE, 0, vertices.data());
     glVertexAttribPointer(mColAttr, 3, GL_FLOAT, GL_FALSE, 0, colors.data());
 
     glEnableVertexAttribArray(mPosAttr);
     glEnableVertexAttribArray(mColAttr);
 
     // Draw vertices
-    glDrawArrays(mode, 0, vertices.size() / 2);
+    glDrawArrays(mode, 0, vertices.size() / 3);
 
     glDisableVertexAttribArray(mColAttr);
     glDisableVertexAttribArray(mPosAttr);
@@ -164,4 +164,33 @@ void OpenGLWindow::zoomOut()
 {
     mScaleFactor /= 1.1f;
     update();
+}
+
+QString OpenGLWindow::readShader(QString path)
+{
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return "Invalid file!";
+
+    QTextStream stream(&file);
+    QString line = stream.readLine();
+    while (!stream.atEnd()) {
+        line.append(stream.readLine());
+    }
+    file.close();
+    return line;
+}
+
+void OpenGLWindow::shaderWatcher()
+{
+    QString vertexShaderSource = readShader(Constants::VertexShaderPath);
+    QString fragmentShaderSource = readShader(Constants::FragmentShaderPath);
+
+    mProgram->release();
+    mProgram->removeAllShaders();
+    mProgram = new QOpenGLShaderProgram(this);
+    mProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
+    mProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
+
+    mProgram->link();
 }

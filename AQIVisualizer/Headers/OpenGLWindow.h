@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Constants.h"
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
@@ -28,12 +29,16 @@ protected:
     void initializeGL() override;
     void wheelEvent(QWheelEvent* event) override;
 
+private slots:
+    void shaderWatcher();
+
 private:
     void reset();
     void setupMatrix();
     void drawVertices(const QVector<GLfloat> vertices, const QVector<GLfloat> colors, GLenum mode);
     void zoomOut();
     void zoomIn();
+    QString readShader(QString path);
     //void addFilePoints(QString s, QVector<GLfloat>& vertices, QVector<GLfloat>& colors, float a, float b, float c);
 
 private:
@@ -52,6 +57,7 @@ private:
     QQuaternion mRotationAngle;
     QPoint mLastPos;
     QMetaObject::Connection mContextWatchConnection;
+    QFileSystemWatcher* mShaderWatcher;
 
     QVector<GLfloat> mVertices;
     QVector<GLfloat> mColors;

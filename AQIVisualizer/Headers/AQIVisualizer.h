@@ -2,6 +2,7 @@
 
 #include "OpenGLWindow.h"
 #include "State.h"
+#include "Constants.h"
 
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>

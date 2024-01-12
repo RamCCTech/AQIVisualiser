@@ -67,8 +67,15 @@
     <None Include="Resources\aqi_data.json">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Resources\Shaders\vertexShader.glsl" />
+    <None Include="Resources\Shaders\fragmentShader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\k.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Headers\Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

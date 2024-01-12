@@ -12,11 +12,11 @@ KMLReader::KMLReader() {
 KMLReader::~KMLReader() {
 }
 
-std::vector<State> KMLReader::parseKMLFromFile(const std::string& filePath) {
+std::vector<State> KMLReader::parseKMLFromFile(const QString& filePath) {
     // Open and read KML file using Qt
-    QFile file(QString::fromStdString(filePath));
+    QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        std::cerr << "Error: Unable to open file " << filePath << std::endl;
+        std::cerr << "Error: Unable to open file "<< std::endl;
         return {};
     }
 
@@ -28,7 +28,7 @@ std::vector<State> KMLReader::parseKMLFromFile(const std::string& filePath) {
     // Parse KML content
     QDomDocument kmlDocument;
     if (!kmlDocument.setContent(&buffer)) {
-        std::cerr << "Error: Unable to parse KML content from file " << filePath << std::endl;
+        std::cerr << "Error: Unable to parse KML content from file " << std::endl;
         return {};
     }
 
@@ -71,8 +71,8 @@ std::vector<Point3D> KMLReader::processCoordinates(const QString& coordinatesStr
     std::vector<Point3D> statePoints;
 
     QStringList coordinatePairs = coordinatesStr.split('\n', Qt::SkipEmptyParts);
-    for (const QString& coordinatePair : coordinatePairs) {
-        QStringList coordinates = coordinatePair.split(' ', Qt::SkipEmptyParts);
+    for (int i = 0; i < coordinatePairs.size();i+=10) {
+        QStringList coordinates = coordinatePairs[i].split(' ', Qt::SkipEmptyParts);
         if (coordinates.size() == 2) {
             bool conversionSuccessX, conversionSuccessY;
             float x = coordinates.at(0).toFloat(&conversionSuccessX);

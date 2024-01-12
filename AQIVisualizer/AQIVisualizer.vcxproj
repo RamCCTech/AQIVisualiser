@@ -115,6 +115,7 @@
     <ClCompile Include="src\AQIVisualizer.cpp" />
     <ClCompile Include="main.cpp" />
     <QtMoc Include="Headers\OpenGLWindow.h" />
+    <ClInclude Include="Headers\Constants.h" />
     <ClInclude Include="Headers\stdafx.h" />
     <ClCompile Include="src\OpenGLWindow.cpp" />
     <ClCompile Include="src\stdafx.cpp">
@@ -127,6 +128,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\aqi_data.json" />
+    <None Include="Resources\Shaders\fragmentShader.glsl" />
+    <None Include="Resources\Shaders\vertexShader.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\k.txt" />
