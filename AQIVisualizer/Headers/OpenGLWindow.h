@@ -45,18 +45,17 @@ private:
     QOpenGLBuffer mVbo;
     int mVertexAttr;
     int mNormalAttr;
-    int mMatrixUniform;
-    GLint m_posAttr = 0;
-    GLint m_colAttr = 0;
-    GLint m_matrixUniform = 0;
+    GLint mPosAttr = 0;
+    GLint mColAttr = 0;
+    GLint mMatrixUniform = 0;
     QColor mBackground;
-    QQuaternion rotationAngle;
-    QPoint lastPos;
+    QQuaternion mRotationAngle;
+    QPoint mLastPos;
     QMetaObject::Connection mContextWatchConnection;
 
     QVector<GLfloat> mVertices;
     QVector<GLfloat> mColors;
     QVector<QVector<GLfloat>> mShapeColors;
     QVector<QVector<GLfloat>> mShapeVertices;
-    float scaleFactor=1;
+    float mScaleFactor=1;
 };

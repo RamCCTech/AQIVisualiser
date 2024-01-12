@@ -14,7 +14,7 @@ AQIVisualizer::AQIVisualizer(QWidget* parent)
 {
     setupUi();
     connect(mPushButton, &QPushButton::clicked, this, &AQIVisualizer::loadFile);
-    connect(calendarWidget, &QCalendarWidget::selectionChanged, this, &AQIVisualizer::updateAQI);
+    connect(mCalendarWidget, &QCalendarWidget::selectionChanged, this, &AQIVisualizer::updateAQI);
     loadAQIData("Resources/aqi_data.json");
 
     // Initialize AQI values for each state in the table
@@ -83,16 +83,16 @@ void AQIVisualizer::setupUi()
     mVerticalLayout1->addWidget(mLabel);
 
     // Create a small calendar widget
-    calendarWidget = new QCalendarWidget(mCentralWidget);
-    calendarWidget->setGridVisible(true);  // You can customize as needed
-    calendarWidget->setSizePolicy(sizePolicy);
+    mCalendarWidget = new QCalendarWidget(mCentralWidget);
+    mCalendarWidget->setGridVisible(true);  // You can customize as needed
+    mCalendarWidget->setSizePolicy(sizePolicy);
 
     // Set the maximum and minimum date of the calendar to 2023 start and end
     QDate minDate(2023, 1, 1);
     QDate maxDate(2023, 12, 31);
-    calendarWidget->setMaximumDate(maxDate);
-    calendarWidget->setMinimumDate(minDate);
-    mVerticalLayout1->addWidget(calendarWidget);
+    mCalendarWidget->setMaximumDate(maxDate);
+    mCalendarWidget->setMinimumDate(minDate);
+    mVerticalLayout1->addWidget(mCalendarWidget);
 
     // Create the LegendWidget
     LegendWidget* legendWidget = new LegendWidget(mCentralWidget);
@@ -214,7 +214,6 @@ void AQIVisualizer::displayMap()
             else if (mSelectedDateAQI[s.name()] == 4) colors << 1 << 0 << 0;
             else if (mSelectedDateAQI[s.name()] == 5) colors << 0.6 << 0 << 1;
             else if (mSelectedDateAQI[s.name()] == 6) colors << 0.6 << 0 << 0;
-            else colors << 0.50196 << 0.50196 << 0.50196;
         }
 
         stateVertices << vertices;
@@ -249,7 +248,7 @@ void AQIVisualizer::updateAQI()
 
         // Your existing update logic
         // Get the selected date from mDateEdit
-        QDate selectedDate = calendarWidget->selectedDate();
+        QDate selectedDate = mCalendarWidget->selectedDate();
 
         // Create a copy of mStates to avoid iterator invalidation
         std::vector<State> statesCopy = mStates;

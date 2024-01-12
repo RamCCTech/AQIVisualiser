@@ -23,52 +23,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="AQIVisualizer.qrc">
-      <Filter>Resource Files</Filter>
-    </QtRcc>
-    <QtMoc Include="Headers\AQIVisualizer.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <ClCompile Include="src\AQIVisualizer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClInclude Include="Headers\stdafx.h">
+    <ClInclude Include="Headers\filereader_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClCompile Include="src\stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OpenGLWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\LegendWidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="Headers\OpenGLWindow.h">
+    <ClInclude Include="Headers\KMLReader.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="Headers\LegendWidget.h">
+    </ClInclude>
+    <ClInclude Include="Headers\JSONReader.h">
       <Filter>Header Files</Filter>
-    </QtMoc>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="AQIVisualizer.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\aqi_data.json">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Resources\k.txt" />
+    <ClCompile Include="src\KMLReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\JSONReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

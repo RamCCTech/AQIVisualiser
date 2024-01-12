@@ -1,9 +1,10 @@
-#include "stdafx.h"
+#include "filereader_global.h"
 #include "KMLReader.h"
 #include <iostream>
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
 #include <QBuffer>
+#include <QFile>
 
 KMLReader::KMLReader() {
 }
@@ -49,8 +50,6 @@ std::vector<State> KMLReader::parseKML(const QDomDocument& kmlDocument) {
         QDomElement nameElement = placemark.firstChildElement("ExtendedData").firstChildElement("Data").firstChildElement("value");
         QString name = nameElement.text();
 
-        // Note: Removed type extraction for simplicity
-
         // Extract coordinate data
         QDomElement coordinatesElement = placemark.firstChildElement("Polygon").firstChildElement("outerBoundaryIs").firstChildElement("LinearRing").firstChildElement("coordinates");
         QString coordinatesStr = coordinatesElement.text();
@@ -85,6 +84,5 @@ std::vector<Point3D> KMLReader::processCoordinates(const QString& coordinatesStr
             }
         }
     }
-
     return statePoints;
 }

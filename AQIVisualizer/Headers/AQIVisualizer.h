@@ -37,7 +37,7 @@ private:
     OpenGLWindow* mOpenGLWidget;
     QTableView* mTableView;
     QStandardItemModel* mListModel;
-    QCalendarWidget* calendarWidget;
+    QCalendarWidget* mCalendarWidget;
 
     std::map<std::string, std::map<std::string, int>> mAQIData;
     std::vector<State> mStates;

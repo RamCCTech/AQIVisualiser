@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QRandomGenerator>
 #include <QDomDocument>
+#include <GL/GL.h>
 #include "Point3D.h"
 #include "KMLReader.h"
 
@@ -57,6 +58,7 @@ void OpenGLWindow::initializeGL()
 
     initializeOpenGLFunctions();
 
+
     // Create and link shader program
     mProgram = new QOpenGLShaderProgram(this);
     mProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
@@ -64,12 +66,13 @@ void OpenGLWindow::initializeGL()
     mProgram->link();
 
     // Get attribute and uniform locations
-    m_posAttr = mProgram->attributeLocation("posAttr");
-    Q_ASSERT(m_posAttr != -1);
-    m_colAttr = mProgram->attributeLocation("colAttr");
-    Q_ASSERT(m_colAttr != -1);
-    m_matrixUniform = mProgram->uniformLocation("matrix");
-    Q_ASSERT(m_matrixUniform != -1);
+    mPosAttr = mProgram->attributeLocation("posAttr");
+    Q_ASSERT(mPosAttr != -1);
+    mColAttr = mProgram->attributeLocation("colAttr");
+    Q_ASSERT(mColAttr != -1);
+    mMatrixUniform = mProgram->uniformLocation("matrix");
+    Q_ASSERT(mMatrixUniform != -1);
+
 }
 
 void OpenGLWindow::setupMatrix()
@@ -77,9 +80,9 @@ void OpenGLWindow::setupMatrix()
     QMatrix4x4 matrix;
     matrix.ortho(-30.0f, 30.0f, -20.0f, 20.0f, -100.0f, 100.0f);
     matrix.translate(0, 0, -2);
-    matrix.rotate(rotationAngle);
-    matrix.scale(scaleFactor);
-    mProgram->setUniformValue(m_matrixUniform, matrix);
+    matrix.rotate(mRotationAngle);
+    matrix.scale(mScaleFactor);
+    mProgram->setUniformValue(mMatrixUniform, matrix);
 }
 
 void OpenGLWindow::paintGL()
@@ -112,33 +115,33 @@ void OpenGLWindow::updateShape(QVector<QVector<GLfloat>>& vertices, QVector<QVec
 void OpenGLWindow::drawVertices(const QVector<GLfloat> vertices, const QVector<GLfloat> colors, GLenum mode)
 {
     // Set attribute pointers
-    glVertexAttribPointer(m_posAttr, 2, GL_FLOAT, GL_FALSE, 0, vertices.data());
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, colors.data());
+    glVertexAttribPointer(mPosAttr, 2, GL_FLOAT, GL_FALSE, 0, vertices.data());
+    glVertexAttribPointer(mColAttr, 3, GL_FLOAT, GL_FALSE, 0, colors.data());
 
-    glEnableVertexAttribArray(m_posAttr);
-    glEnableVertexAttribArray(m_colAttr);
+    glEnableVertexAttribArray(mPosAttr);
+    glEnableVertexAttribArray(mColAttr);
 
     // Draw vertices
     glDrawArrays(mode, 0, vertices.size() / 2);
 
-    glDisableVertexAttribArray(m_colAttr);
-    glDisableVertexAttribArray(m_posAttr);
+    glDisableVertexAttribArray(mColAttr);
+    glDisableVertexAttribArray(mPosAttr);
 }
 
 void OpenGLWindow::mouseMoveEvent(QMouseEvent* event)
 {
-    int dx = event->x() - lastPos.x();
-    int dy = event->y() - lastPos.y();
+    int dx = event->x() - mLastPos.x();
+    int dy = event->y() - mLastPos.y();
 
     if (event->buttons() & Qt::LeftButton)
     {
         QQuaternion rotX = QQuaternion::fromAxisAndAngle(0.0f, 1.0f, 0.0f, 0.1f * dx);
         QQuaternion rotY = QQuaternion::fromAxisAndAngle(1.0f, 0.0f, 0.0f, 0.1f * dy);
 
-        rotationAngle = rotX * rotY * rotationAngle;
+        mRotationAngle = rotX * rotY * mRotationAngle;
         update();
     }
-    lastPos = event->pos();
+    mLastPos = event->pos();
 }
 
 void OpenGLWindow::wheelEvent(QWheelEvent* event)
@@ -153,12 +156,12 @@ void OpenGLWindow::wheelEvent(QWheelEvent* event)
 
 void OpenGLWindow::zoomIn()
 {
-    scaleFactor *= 1.1f;
+    mScaleFactor *= 1.1f;
     update();
 }
 
 void OpenGLWindow::zoomOut()
 {
-    scaleFactor /= 1.1f;
+    mScaleFactor /= 1.1f;
     update();
 }

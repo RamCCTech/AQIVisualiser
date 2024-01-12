@@ -3,7 +3,9 @@
 #include <vector>
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
-class KMLReader
+#include "filereader_global.h"
+
+class FILEREADER_EXPORT KMLReader
 {
 public:
 	KMLReader();

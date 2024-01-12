@@ -5,8 +5,9 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include "filereader_global.h"
 
-class JSONReader
+class FILEREADER_EXPORT JSONReader
 {
 public:
 	JSONReader();

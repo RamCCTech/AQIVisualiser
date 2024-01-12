@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Point3D.h"
+#include "pch.h"
 #include <map>
 #include <string>
 #include <vector>
 
-class State {
+class STATE_API State {
 public:
     State();
     ~State();
