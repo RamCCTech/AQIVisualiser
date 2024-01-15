@@ -30,7 +30,7 @@ private:
     void loadFile();
     void loadAQIData(const QString& filePath);
     void updateAQI();
-    void updateAQIInListView(std::string name, int aqi);
+    void updateAQIInListView(const std::string name, int aqi);
     void displayMap();
 
 private:

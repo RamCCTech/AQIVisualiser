@@ -23,7 +23,7 @@ public:
     void updateShape(QVector<GLfloat>& vertices, QVector<GLfloat>& colors);
     void updateShape(QVector<QVector<GLfloat>>& vertices, QVector<QVector<GLfloat>>& colors);
     void mouseMoveEvent(QMouseEvent* event);
-    void updateMatrixUniform();
+  
 protected:
     void paintGL() override;
     void initializeGL() override;
@@ -39,7 +39,6 @@ private:
     void zoomOut();
     void zoomIn();
     QString readShader(QString path);
-    //void addFilePoints(QString s, QVector<GLfloat>& vertices, QVector<GLfloat>& colors, float a, float b, float c);
 
 private:
     bool mAnimating = false;

@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="AQIVisualizer">
+    <Position X="7.5" Y="5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>QBgEECAAIACQFAAAAAAAIEAAAAQACAAGQQQAAACAAgA=</HashCode>
+      <FileName>Headers\AQIVisualizer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QMainWindow" Collapsed="true">
+    <Position X="7.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AoACQgKYCA0hRAgRkKBY4oAAABEAABuBggAgIAMgACA=</HashCode>
+      <FileName>C:\Qt\6.6.1\msvc2019_64\include\QtWidgets\qmainwindow.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QWidget" Collapsed="true">
+    <Position X="10.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>hA6pAGgYqICSoYVAaL8yqpBimu1GwLWO4PBqCgXdwII=</HashCode>
+      <FileName>C:\Qt\6.6.1\msvc2019_64\include\QtWidgets\qwidget.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QObject" Collapsed="true">
+    <Position X="13.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>iAgAAAAQQIAgAAVUgYAAEISGAAsQiIIHBEAiIhJGACE=</HashCode>
+      <FileName>C:\Qt\6.6.1\msvc2019_64\include\QtCore\qobject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QPaintDevice" Collapsed="true">
+    <Position X="16.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAIAQAQwKAAQEiAIIAAAAAgAiIMAAgAEA=</HashCode>
+      <FileName>C:\Qt\6.6.1\msvc2019_64\include\QtGui\qpaintdevice.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LegendWidget" Collapsed="true">
+    <Position X="16" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAAAAAAAAAAAQAAAAAQgAAAAAAQAA=</HashCode>
+      <FileName>Headers\LegendWidget.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OpenGLWindow">
+    <Position X="11.75" Y="4" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAIgAMAUAABCEgAABGAIAGBAAIAQQAQiIAgAAAIoAAA=</HashCode>
+      <FileName>Headers\OpenGLWindow.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QOpenGLWidget" Collapsed="true">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAJAAAAAKCAAyBCAAGJAAAAIAoIKACAiBBAAEAAA=</HashCode>
+      <FileName>C:\Qt\6.6.1\msvc2019_64\include\QtOpenGLWidgets\qopenglwidget.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QOpenGLFunctions" Collapsed="true">
+    <Position X="19.25" Y="1" Width="1.75" />
+    <NestedTypes>
+      <Enum Name="QOpenGLFunctions::OpenGLFeature" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>C:\Qt\6.6.1\msvc2019_64\include\QtGui\qopenglfunctions.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>8h0fiJLNACKdkQRuIQUFZL4iGK8IGKJPExiHn0iB3Kg=</HashCode>
+      <FileName>C:\Qt\6.6.1\msvc2019_64\include\QtGui\qopenglfunctions.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -127,6 +127,7 @@
     <QtUic Include="AQIVisualizer.ui" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="Resources\aqi_data.json" />
     <None Include="Resources\Shaders\fragmentShader.glsl" />
     <None Include="Resources\Shaders\vertexShader.glsl" />

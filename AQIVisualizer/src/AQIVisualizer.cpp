@@ -274,7 +274,7 @@
         progressDialog.close();
     }
 
-    void AQIVisualizer::updateAQIInListView(std::string name, int aqi)
+    void AQIVisualizer::updateAQIInListView(const std::string name, int aqi)
     {
         QString qName = QString::fromStdString(name);
 

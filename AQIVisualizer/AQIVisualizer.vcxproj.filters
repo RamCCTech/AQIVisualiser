@@ -69,6 +69,7 @@
     </None>
     <None Include="Resources\Shaders\vertexShader.glsl" />
     <None Include="Resources\Shaders\fragmentShader.glsl" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\k.txt" />
