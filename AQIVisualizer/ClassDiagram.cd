@@ -35,7 +35,7 @@
       <FileName>C:\Qt\6.6.1\msvc2019_64\include\QtGui\qpaintdevice.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="LegendWidget" Collapsed="true">
+  <Class Name="LegendWidget">
     <Position X="16" Y="4.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAQAAAAAAAAAAAAAAAAAAAAAQAAAAAQgAAAAAAQAA=</HashCode>

@@ -67,19 +67,28 @@ void OpenGLWindow::initializeGL()
 void OpenGLWindow::setupMatrix()
 {
     QMatrix4x4 matrix;
+    QMatrix4x4 matrixProj;
+    QMatrix4x4 matrixModel;
 
     // Get the size of the OpenGL window
     QSize screenSize = size();
+    matrixProj.setToIdentity();
+    matrixModel.setToIdentity();
 
     // Adjust the orthographic projection matrix based on screen size
     qreal aspectRatio = static_cast<qreal>(screenSize.width()) / screenSize.height();
     qreal orthoWidth = 50.0f;
     qreal orthoHeight = orthoWidth / aspectRatio;
 
-    matrix.ortho(-orthoWidth / 2, orthoWidth / 2, -orthoHeight / 2, orthoHeight / 2, -100.0f, 100.0f);
-    matrix.translate(0, 0, -2);
-    matrix.rotate(mRotationAngle);
-    matrix.scale(mScaleFactor);
+    matrixProj.ortho(-orthoWidth / 2, orthoWidth / 2, -orthoHeight / 2, orthoHeight / 2, -100.0f, 100.0f);
+
+    // Apply transformations to the model matrix
+    matrixModel.translate(mPanTranslationFactor);
+    matrixModel.rotate(mRotationAngle);
+    matrixModel.scale(mScaleFactor);
+
+    // Combine the projection and model matrices
+    matrix = matrixProj * matrixModel;
 
     mProgram->setUniformValue(mMatrixUniform, matrix);
 }
@@ -139,10 +148,17 @@ void OpenGLWindow::mouseMoveEvent(QMouseEvent* event)
         QQuaternion rotY = QQuaternion::fromAxisAndAngle(1.0f, 0.0f, 0.0f, 0.1f * dy);
 
         mRotationAngle = rotX * rotY * mRotationAngle;
-        update();
     }
+    else if (event->buttons() & Qt::RightButton)
+    {
+        // Use the pan translation factor only when the right mouse button is pressed
+        mPanTranslationFactor += QVector3D(0.01f * dx, -0.01f * dy, 0.0f);
+        
+    }
+    update();
     mLastPos = event->pos();
 }
+
 
 void OpenGLWindow::wheelEvent(QWheelEvent* event)
 {

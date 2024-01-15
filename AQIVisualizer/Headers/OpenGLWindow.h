@@ -54,6 +54,7 @@ private:
     GLint mMatrixUniform = 0;
     QColor mBackground;
     QQuaternion mRotationAngle;
+    QVector3D mPanTranslationFactor;
     QPoint mLastPos;
     QMetaObject::Connection mContextWatchConnection;
     QFileSystemWatcher* mShaderWatcher;
